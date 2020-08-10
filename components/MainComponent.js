@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Menu from './MenuComponent';
-import Dishdetail from './DishDetailComponent';
+import Dishdetail from './DishdetailComponent';
 import { View } from 'react-native';
 import { DISHES } from '../shared/dishes';
 
@@ -20,7 +20,7 @@ class Main extends Component {
     render() {
 
         return (
-            <View style={{ flex: 1 }}>
+            <View>
                 <Menu dishes={this.state.dishes} onPress={(dishId) => this.onDishSelect(dishId)} />
                 <Dishdetail dish={this.state.dishes.filter((dish) => dish.id === this.state.selectedDish)[0]} />
             </View>
