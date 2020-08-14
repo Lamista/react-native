@@ -2,7 +2,7 @@ import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
 export const fetchComments = () => (dispatch) => {
-    return fetch(baseUrl + 'comments.js')
+    return fetch(baseUrl + 'comments.json')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -35,7 +35,7 @@ export const fetchDishes = () => (dispatch) => {
 
     dispatch(dishesLoading());
 
-    return fetch(baseUrl + 'dishes.js')
+    return fetch(baseUrl + 'dishes.json')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -72,7 +72,7 @@ export const fetchPromos = () => (dispatch) => {
 
     dispatch(promosLoading());
 
-    return fetch(baseUrl + 'promotions.js')
+    return fetch(baseUrl + 'promotions.json')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -109,7 +109,7 @@ export const fetchLeaders = () => (dispatch) => {
 
     dispatch(leadersLoading());
 
-    return fetch(baseUrl + 'leaders.js')
+    return fetch(baseUrl + 'leaders.json')
         .then(response => {
             if (response.ok) {
                 return response;
@@ -154,3 +154,59 @@ export const addFavorite = (dishId) => ({
     type: ActionTypes.ADD_FAVORITE,
     payload: dishId
 });
+
+export const addComment = (comment) => ({
+    type: ActionTypes.ADD_COMMENT,
+    payload: comment
+});
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+
+    const newComment = {
+        dishId: dishId,
+        rating: rating,
+        author: author,
+        comment: comment,
+        date: new Date().toISOString()
+    };
+
+    // return fetch(baseUrl + 'comments.json', {
+    //     method: "POST",
+    //     body: JSON.stringify(newComment),
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    //     credentials: "same-origin"
+    // })
+    //     .then(response => {
+    //         if (response.ok) {
+    //             return response;
+    //         } else {
+    //             var error = new Error('Error ' + response.status + ': ' + response.statusText);
+    //             error.response = response;
+    //             throw error;
+    //         }
+    //     },
+    //         error => {
+    //             throw error;
+    //         })
+    //     .then(response => response.json())
+    //     .then(response => setTimeout(() => {
+    //         dispatch(addComment(response));
+    //     }, 2000))
+    //     .catch(error => {
+    //         console.log('post comments', error.message);
+    //     })
+
+    // or just
+    setTimeout(() => {
+        var newComment = {
+            dishId: dishId,
+            rating: rating,
+            author: author,
+            comment: comment,
+            date: new Date()
+        }
+        dispatch(addComment(newComment));
+    }, 2000);
+};

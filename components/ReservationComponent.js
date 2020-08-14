@@ -124,7 +124,6 @@ class Reservation extends Component {
                         />
                     </View>
                 </Modal>
-
             </ScrollView>
         );
     }
