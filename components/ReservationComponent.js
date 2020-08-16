@@ -56,7 +56,7 @@ class Reservation extends Component {
                     },
                     {
                         text: 'OK',
-                        onPress: () => this.handleReservation()
+                        onPress: () => this.resetForm()
                     }
                 ],
                 { cancelable: false }
@@ -64,7 +64,7 @@ class Reservation extends Component {
 
         return (
             <ScrollView>
-                <Animatable.View animation="zoomInUp">
+                <Animatable.View animation="zoomIn">
                     <View style={styles.formRow}>
                         <Text style={styles.formLabel}>Number of Guests</Text>
                         <Picker
@@ -98,7 +98,7 @@ class Reservation extends Component {
                                 mode="datetime"
                                 isVisible={this.state.isModalOpen}
                                 date={new Date()}
-                                onConfirm={(date) => this.setState({ date: date.toISOString() }),
+                                onConfirm={(date) => this.setState({ date: date }),
                                     () => this.setState({ isModalOpen: false }),
                                     (date) => console.log(date)}
                                 onCancel={() => this.setState({ isModalOpen: false })}
