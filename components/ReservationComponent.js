@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Alert } from 'react-native';
-import DatePicker from 'react-native-datepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as Animatable from 'react-native-animatable';
 
 class Reservation extends Component {
@@ -11,7 +11,8 @@ class Reservation extends Component {
         this.state = {
             guests: 1,
             smoking: false,
-            date: ''
+            date: '',
+            isModalOpen: false
         }
     }
 
@@ -33,8 +34,13 @@ class Reservation extends Component {
         this.setState({
             guests: 1,
             smoking: false,
-            date: ''
+            date: '',
+            isModalOpen: false
         });
+    }
+
+    toggleDateTimeModal() {
+        this.setState({ isModalOpen: !this.state.isModalOpen });
     }
 
     render() {
@@ -84,28 +90,20 @@ class Reservation extends Component {
                     </View>
                     <View style={styles.formRow}>
                         <Text style={styles.formLabel}>Date and Time</Text>
-                        <DatePicker
-                            style={{ flex: 2, marginRight: 20 }}
-                            date={this.state.date}
-                            format=''
-                            mode="datetime"
-                            placeholder="select date and Time"
-                            minDate="2017-01-01"
-                            confirmBtnText="Confirm"
-                            cancelBtnText="Cancel"
-                            customStyles={{
-                                dateIcon: {
-                                    position: 'absolute',
-                                    left: 0,
-                                    top: 4,
-                                    marginLeft: 0
-                                },
-                                dateInput: {
-                                    marginLeft: 36
-                                }
-                            }}
-                            onDateChange={(date) => { this.setState({ date: date }) }}
-                        />
+                        <View style={styles.formItem}>
+                            <Text>{this.state.date}</Text>
+                            <Button title="Show Date Picker" onPress={() => this.setState({ isModalOpen: true })} />
+                            <DateTimePickerModal
+                                onPress={() => this.setState({ isModalOpen: true })}
+                                mode="datetime"
+                                isVisible={this.state.isModalOpen}
+                                date={new Date()}
+                                onConfirm={(date) => this.setState({ date: date.toISOString() }),
+                                    () => this.setState({ isModalOpen: false }),
+                                    (date) => console.log(date)}
+                                onCancel={() => this.setState({ isModalOpen: false })}
+                            />
+                        </View>
                     </View>
                     <View style={styles.formRow}>
                         <Button
@@ -136,6 +134,22 @@ const styles = StyleSheet.create({
     },
     formItem: {
         flex: 1
+    },
+    modal: {
+        justifyContent: 'center',
+        margin: 20
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#512DA8',
+        textAlign: 'center',
+        color: 'white',
+        marginBottom: 20
+    },
+    modalText: {
+        fontSize: 18,
+        margin: 10
     }
 });
 
