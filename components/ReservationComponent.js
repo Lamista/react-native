@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Alert } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as Animatable from 'react-native-animatable';
+import * as Notifications from 'expo-notifications';
 
 class Reservation extends Component {
 
@@ -11,7 +12,7 @@ class Reservation extends Component {
         this.state = {
             guests: 1,
             smoking: false,
-            date: '',
+            date: '', //2020-08-30T01:30:00.000Z
             isModalOpen: false
         }
     }
@@ -31,11 +32,51 @@ class Reservation extends Component {
 
     handleReservation() {
         console.log(JSON.stringify(this.state));
-        this.setState({
-            guests: 1,
-            smoking: false,
-            date: '',
-            isModalOpen: false
+        Alert.alert(
+            'Your Reservation OK?',
+            `Number of Guests: ${this.state.guests}\nSmoking?: ${this.state.smoking ? 'Yes' : 'No'}\nDate and Time: ${this.state.date}`,
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => this.resetForm(),
+                    style: ' cancel'
+                },
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date),
+                            this.resetForm()
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    }
+
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+        }
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission();
+        Notifications.presentLocalNotificationAsync({
+            title: 'Your Reservation',
+            body: 'Reservation for ' + date + ' requested',
+            ios: {
+                sound: true
+            },
+            android: {
+                sound: true,
+                vibrate: true,
+                color: '#512DA8'
+            }
         });
     }
 
@@ -44,23 +85,6 @@ class Reservation extends Component {
     }
 
     render() {
-        const createAlert = () =>
-            Alert.alert(
-                'Your Reservation OK?',
-                `Number of Guests: ${this.state.guests}\nSmoking?: ${this.state.smoking ? 'Yes' : 'No'}\nDate and Time: ${this.state.date}`,
-                [
-                    {
-                        text: 'Cancel',
-                        onPress: () => this.resetForm(),
-                        style: ' cancel'
-                    },
-                    {
-                        text: 'OK',
-                        onPress: () => this.resetForm()
-                    }
-                ],
-                { cancelable: false }
-            );
 
         return (
             <ScrollView>
@@ -107,7 +131,7 @@ class Reservation extends Component {
                     </View>
                     <View style={styles.formRow}>
                         <Button
-                            onPress={createAlert}
+                            onPress={() => this.handleReservation()}
                             title="Reserve"
                             color="#512DA8"
                             accessibilityLabel="Learn more about this purple button"
