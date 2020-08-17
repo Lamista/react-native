@@ -12,7 +12,7 @@ class Reservation extends Component {
         this.state = {
             guests: 1,
             smoking: false,
-            date: '', //2020-08-30T01:30:00.000Z
+            date: '', //'2020-08-30T01:30:00.000Z'
             isModalOpen: false
         }
     }
